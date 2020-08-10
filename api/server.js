@@ -26,12 +26,32 @@ server.post("/accounts", (req, res) => {
 
 server.put("/accounts/:id", (req, res) => {
   const accountId = req.params.id;
+
   db("accounts")
     .where({ id: accountId })
     .update(req.body)
     .then((count) => {
       if (count) {
         res.status(200).json({ message: "Change successful!" }).end();
+      } else {
+        res.status(404).json({ message: "Account not found!" }).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ error }).end();
+    });
+});
+
+server.delete("/accounts/:id", (req, res) => {
+  const accountId = req.params.id;
+
+  db("accounts")
+    .where({ id: accountId })
+    .del()
+    .then((count) => {
+      if (count) {
+        res.status(200).json({ message: "Removal successful!" }).end();
       } else {
         res.status(404).json({ message: "Account not found!" }).end();
       }
